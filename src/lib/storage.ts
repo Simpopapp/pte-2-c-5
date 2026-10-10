@@ -143,12 +143,25 @@ export function emptyState(preserveSettings?: Settings): AppState {
 
 const EMPTY = emptyState();
 
+/** Aceita "YYYY-MM-DD" que de fato existe no calendário (1970–2100). */
+export function isValidExamDate(v: unknown): v is string {
+  if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+  const [y, m, d] = v.split("-").map(Number) as [number, number, number];
+  if (y < 1970 || y > 2100 || m < 1 || m > 12 || d < 1) return false;
+  const dt = new Date(y, m - 1, d);
+  return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
+}
+
 function normalizeSettings(raw: unknown): Settings {
   const s = (raw ?? {}) as Partial<Settings>;
   const accent: Accent =
     s.accent === "en-US" || s.accent === "en-GB" || s.accent === "en-AU"
       ? s.accent
       : DEFAULT_SETTINGS.accent;
+  const targetScore =
+    typeof s.targetScore === "number" && Number.isFinite(s.targetScore)
+      ? Math.min(90, Math.max(10, Math.round(s.targetScore)))
+      : DEFAULT_SETTINGS.targetScore;
   return {
     prepSeconds:
       typeof s.prepSeconds === "number" && s.prepSeconds >= 0
@@ -159,6 +172,8 @@ function normalizeSettings(raw: unknown): Settings {
     modelRate:
       typeof s.modelRate === "number" && s.modelRate > 0 ? s.modelRate : DEFAULT_SETTINGS.modelRate,
     accent,
+    examDate: isValidExamDate(s.examDate) ? s.examDate : null,
+    targetScore,
   };
 }
 
