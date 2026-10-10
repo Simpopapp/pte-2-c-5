@@ -62,6 +62,10 @@ function HomePage() {
   const dueCount = countDue(stats);
   const dueByType = useMemo(() => countDueByType(stats), [stats]);
 
+  const examDays = daysUntil(app.settings.examDate);
+  const examCountdown = countdownLabel(examDays);
+  const verdict = targetVerdict(avg7, app.settings.targetScore);
+
   // Próxima questão sugerida pela fila inteligente (revisões vencidas → novas), calculada no clique.
   const continueTraining = () => {
     const next = buildQueue(computeStats(app), 1)[0] ?? firstIdOfType("read_aloud");
