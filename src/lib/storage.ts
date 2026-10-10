@@ -487,7 +487,7 @@ export function exportBackup(): string {
   return JSON.stringify(
     {
       app: "pte-master-hub",
-      version: 3,
+      version: 4,
       exportedAt: new Date().toISOString(),
       attempts: state.attempts,
       bookmarks: state.bookmarks,
