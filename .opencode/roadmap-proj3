@@ -12,11 +12,11 @@ tsgo limpo · build OK · preview :8080 verificado (Playwright nas rotas tocadas
   - [ ] src/lib/pte/goal.ts (daysUntil, targetVerdict) + testes
   - [ ] /settings: seção "Prova" (data + alvo 50/58/65/79); home: countdown + alvo
   - Gates: vitest · tsgo · build · preview /settings + home verificados
-- [ ] Fase 2 (P0) — Índice de prontidão
-  - [ ] src/lib/pte/readiness.ts (readinessBySection, weakestSection) + testes
-  - [ ] /progress: seção "Prontidão" (4 barras, legenda do cálculo, seção fraca destacada)
-  - [ ] Home: chip de prontidão por card de seção + link para /progress
-  - Gates: vitest · tsgo · build · preview /progress + home verificados
+- [x] Fase 2 (P0) — Índice de prontidão
+  - [x] src/lib/pte/readiness.ts (readinessBySection, weakestSection) + testes
+  - [x] /progress: seção "Prontidão" (4 barras, legenda do cálculo, seção fraca destacada)
+  - [x] Home: chip de prontidão por card de seção + link para /progress
+  - Gates: vitest · tsgo · build · preview /progress + home verificados ✅ (147/147, sem erros de console)
 - [ ] Fase 3 (P1) — Plano do dia
   - [ ] src/lib/pte/studyPlan.ts (EXAM_WEIGHTS 30/30/20/20, buildDailyPlan, planSummary) + testes
   - [ ] Home: card "Plano de hoje" + "Iniciar plano" (startMixedSession com counts)
