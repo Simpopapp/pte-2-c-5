@@ -39,28 +39,6 @@ coverage/
 *.sw?
 .history/
 
-# AI Agents, Runtimes & Opencode Tools (não essenciais para o app PTE)
-.lovable/
-TOOLS.md
-**/TOOLS.md
-AVISO-OPENCODE.txt
-opencode.json
-runtime-skills/
-tools-skills/
-skills/
-.agents/
-.gemini/
-.claude/
-.cursor/
-.windsurf/
-CLAUDE.md
-GEMINI.md
-Plan.md
-prd-*.md
-roadmap-*.md
-git-tool.md
-brain/
-
 # .opencode e arquivos do OpenCode visiveis no editor (pedido do usuario)
 !.opencode/
 !.opencode/**
