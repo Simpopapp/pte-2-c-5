@@ -11,6 +11,7 @@ import {
   ACCENT_OPTIONS,
   type Accent,
 } from "@/lib/storage";
+import { countdownLabel, daysUntil } from "@/lib/pte/goal";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/settings")({
