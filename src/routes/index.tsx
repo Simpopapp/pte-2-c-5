@@ -160,7 +160,8 @@ function HomePage() {
               ) : null}
             </p>
             <Link
-              to="/progress#readiness"
+              to="/progress"
+              hash="readiness"
               className="text-sm font-medium text-primary hover:underline"
             >
               Ver prontidão →
