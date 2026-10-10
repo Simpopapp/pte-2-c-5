@@ -181,7 +181,7 @@ describe("readinessBySection", () => {
     const sp = bySection(rows).get("speaking")!;
     expect(sp.attempted).toBe(1);
     expect(sp.coverage).toBe(1);
-    expect(sp.recentScore).toBe(70);
+    expect(sp.recentScore).toBe(80); // (70+90)/2 — as duas tentativas estão nos últimos 7 dias
   });
 });
 

@@ -9,9 +9,10 @@ import { SECTION_META, SECTION_ORDER, TYPE_META, type Section } from "./types";
 
 const DAY = 86_400_000;
 
-const WEIGHT_COVERAGE = 0.4;
-const WEIGHT_RECENT = 0.4;
-const WEIGHT_STABILITY = 0.2;
+// Pesos inteiros (sobre 100) para a conta ficar estável em ponto flutuante.
+const WEIGHT_COVERAGE = 40;
+const WEIGHT_RECENT = 40;
+const WEIGHT_STABILITY = 20;
 
 export type ReadinessLevel = "Iniciando" | "Em progresso" | "Quase pronto" | "Pronto";
 
