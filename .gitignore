@@ -68,3 +68,5 @@ brain/
 # .opencode e arquivos do OpenCode visiveis no editor (pedido do usuario)
 !.opencode/
 !.opencode/**
+
+# test
