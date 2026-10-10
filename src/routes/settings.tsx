@@ -162,6 +162,50 @@ function SettingsPage() {
         />
 
         <section className="rounded-2xl border border-border bg-card p-5">
+          <h2 className="font-medium">Prova</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Sua meta: data da prova e pontuação-alvo. O app usa isso para mostrar a contagem
+            regressiva e medir sua prontidão — nada sai daqui do navegador.
+          </p>
+          <div className="mt-4 space-y-4">
+            <div>
+              <label
+                htmlFor="exam-date"
+                className="mb-1.5 block text-sm font-medium text-foreground/90"
+              >
+                Data da prova
+              </label>
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  id="exam-date"
+                  type="date"
+                  value={s.examDate ?? ""}
+                  onChange={(e) => updateSettings({ examDate: e.target.value || null })}
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+                />
+                {s.examDate ? (
+                  <Button variant="outline" size="sm" onClick={() => updateSettings({ examDate: null })}>
+                    Remover
+                  </Button>
+                ) : null}
+              </div>
+              {s.examDate ? (
+                <p className="mt-2 text-sm text-primary">
+                  {countdownLabel(daysUntil(s.examDate))}
+                </p>
+              ) : null}
+            </div>
+            <OptionGroup
+              title="Pontuação-alvo"
+              description="Sua meta de score no PTE (escala 10–90)."
+              options={targetOptions}
+              current={s.targetScore}
+              onSelect={(v) => updateSettings({ targetScore: v })}
+            />
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-border bg-card p-5">
           <h2 className="font-medium">Backup do progresso</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Seu histórico vive só neste navegador. Exporte um arquivo JSON para guardar ou levar
