@@ -160,7 +160,7 @@ describe("Backup v3 (envelope único)", () => {
     });
     const backup = storage.exportBackup();
     const parsed = JSON.parse(backup);
-    expect(parsed.version).toBe(3);
+    expect(parsed.version).toBe(4);
     expect(parsed.notes["pte-ra-abc"].text).toBe("ler devagar");
     expect(parsed.sessions).toHaveLength(1);
 
@@ -189,7 +189,7 @@ describe("Backup v3 (envelope único)", () => {
     });
     expect(storage.importBackup(v2).ok).toBe(true);
     const state = await readSaved();
-    expect(state.version).toBe(3);
+    expect(state.version).toBe(4);
     expect(state.bookmarks).toEqual(["x"]);
   });
 
@@ -206,7 +206,7 @@ describe("Estado vazio v3", () => {
   it("emptyState retorna a estrutura v3 completa", async () => {
     const { storage } = await load();
     const s = storage.emptyState();
-    expect(s.version).toBe(3);
+    expect(s.version).toBe(4);
     expect(s.notes).toEqual({});
     expect(s.sessions).toEqual([]);
     expect(s.draft).toBeNull();

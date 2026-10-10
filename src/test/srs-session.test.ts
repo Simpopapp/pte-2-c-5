@@ -177,7 +177,7 @@ describe("Storage: migração da chave antiga", () => {
     const mod = await import("@/lib/storage");
     expect(window.localStorage.getItem("readaloud-trainer-v1")).toBeNull();
     const saved = JSON.parse(window.localStorage.getItem("pte-master-hub")!);
-    expect(saved.version).toBe(3);
+    expect(saved.version).toBe(4);
     expect(saved.attempts).toHaveLength(1);
     expect(saved.settings.dailyGoal).toBe(7);
     expect(mod.MAX_ATTEMPTS).toBeGreaterThan(1000);

@@ -21,7 +21,7 @@ const V1_DOC = {
 describe("Storage v3 — migração do progresso legado", () => {
   it("converte estado v1 (Read Aloud) preservando tentativas e ajustes", () => {
     const next = migrateLegacyState(V1_DOC);
-    expect(next.version).toBe(3);
+    expect(next.version).toBe(4);
     expect(next.attempts).toHaveLength(1);
     const a = next.attempts[0]!;
     expect(a.qid).toBe("pte-ra-abc");
@@ -43,7 +43,7 @@ describe("Storage v3 — migração do progresso legado", () => {
       bookmarks: [],
       settings: { dailyGoal: 3 },
     });
-    expect(v2.version).toBe(3);
+    expect(v2.version).toBe(4);
     expect(v2.settings.dailyGoal).toBe(3);
     expect(v2.notes).toEqual({});
     expect(v2.sessions).toEqual([]);
@@ -51,7 +51,7 @@ describe("Storage v3 — migração do progresso legado", () => {
 
     const invalid = migrateLegacyState({ version: 99 });
     expect(invalid.attempts).toHaveLength(0);
-    expect(invalid.version).toBe(3);
+    expect(invalid.version).toBe(4);
   });
 
   it("estado v3 preserva notas, histórico de sessões e draft retomável", () => {
@@ -87,7 +87,7 @@ describe("Storage v3 — migração do progresso legado", () => {
       },
       settings: {},
     });
-    expect(v3.version).toBe(3);
+    expect(v3.version).toBe(4);
     expect(Object.keys(v3.notes)).toEqual(["pte-ra-abc"]);
     expect(v3.sessions).toHaveLength(1);
     expect(v3.sessions[0]!.results).toHaveLength(1); // resultado inválido descartado
