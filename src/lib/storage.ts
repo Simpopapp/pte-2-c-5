@@ -119,6 +119,8 @@ export const DEFAULT_SETTINGS: Settings = {
   dailyGoal: 10,
   modelRate: 1,
   accent: "en-AU",
+  examDate: null,
+  targetScore: 65,
 };
 
 export const ACCENT_OPTIONS: { value: Accent; label: string }[] = [
