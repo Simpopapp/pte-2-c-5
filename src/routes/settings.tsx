@@ -48,6 +48,12 @@ const rateOptions = [
   { value: 1, label: "1.0× (normal)" },
   { value: 0.8, label: "0.8× (mais lento)" },
 ];
+const targetOptions = [
+  { value: 50, label: "50 — universidades" },
+  { value: 58, label: "58 — trabalho/vistos" },
+  { value: 65, label: "65 — imigração AU/UK" },
+  { value: 79, label: "79 — pontuação máxima" },
+];
 
 function OptionGroup<T extends number | string>({
   title,
