@@ -1,0 +1,36 @@
+# Roadmap — projeto 3 (meta, plano de estudo e prontidão)
+
+Fonte: `.opencode/prd-project3.md` (← `.opencode/project3`). Gates por fase: vitest verde ·
+tsgo limpo · build OK · preview :8080 verificado (Playwright nas rotas tocadas).
+
+- [ ] Fase 0 (P0) — Gate de fonte da Fase 5 (pesquisa, roda em paralelo)
+  - [ ] Varredura online por fontes de Describe Image / Write Essay / Re-order / Reading FIB
+  - [ ] Veredito registrado (§4 do PRD): fontes aprovadas/reprovadas + contagens
+  - Gates: veredito documentado (a fase 5 só executa se houver fonte aprovada)
+- [ ] Fase 1 (P0) — Meta do usuário
+  - [ ] Settings v4 (examDate, targetScore) + normalização + migração v3→v4 + backup v4
+  - [ ] src/lib/pte/goal.ts (daysUntil, targetVerdict) + testes
+  - [ ] /settings: seção "Prova" (data + alvo 50/58/65/79); home: countdown + alvo
+  - Gates: vitest · tsgo · build · preview /settings + home verificados
+- [x] Fase 2 (P0) — Índice de prontidão
+  - [x] src/lib/pte/readiness.ts (readinessBySection, weakestSection) + testes
+  - [x] /progress: seção "Prontidão" (4 barras, legenda do cálculo, seção fraca destacada)
+  - [x] Home: chip de prontidão por card de seção + link para /progress
+  - Gates: vitest · tsgo · build · preview /progress + home verificados ✅ (147/147, sem erros de console)
+- [ ] Fase 3 (P1) — Plano do dia
+  - [ ] src/lib/pte/studyPlan.ts (EXAM_WEIGHTS 30/30/20/20, buildDailyPlan, planSummary) + testes
+  - [ ] Home: card "Plano de hoje" + "Iniciar plano" (startMixedSession com counts)
+  - [ ] /session: entrada "Plano de hoje (N)"
+  - Gates: vitest · tsgo · build · preview home + /session verificados
+- [ ] Fase 4 (P1) — Relatório semanal
+  - [ ] src/lib/pte/report.ts (weeklyReport, renderReportMarkdown/Json) + testes
+  - [ ] /progress: seção "Relatório semanal" (preview, copiar, baixar .md)
+  - Gates: vitest · tsgo · build · preview /progress verificado (clipboard incluído)
+- [ ] Fase 5 (P2) — Novos task types (BLOQUEADA: depende da Fase 0)
+  - [ ] Gate de dedupe + normalização dos bancos aprovados (se houver)
+  - [ ] Motores novos + TYPE_META.ready + dispatcher + EXAM_PLAN + testes
+  - [ ] Home/section/exam atualizados; contagem TOTAL atualizada
+  - Gates: vitest · tsgo · build · preview dos 4 novos tipos · offline E2E
+
+Regras: 100% localStorage; backup JSON é o envelope (v4 aceita v2/v3); TTS Web Speech;
+nenhuma dependência nova; funções puras em src/lib com testes antes da UI.

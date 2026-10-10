@@ -26,6 +26,10 @@ export interface Settings {
   dailyGoal: number;
   modelRate: number;
   accent: Accent;
+  /** Data da prova ("YYYY-MM-DD") ou null = sem meta declarada. */
+  examDate: string | null;
+  /** Pontuação-alvo PTE (10–90). */
+  targetScore: number;
 }
 
 export interface SessionResult {
@@ -64,7 +68,7 @@ export interface QuestionNote {
 }
 
 export interface AppState {
-  version: 3;
+  version: 4;
   attempts: Attempt[];
   bookmarks: string[];
   notes: Record<string, QuestionNote>;
@@ -115,6 +119,8 @@ export const DEFAULT_SETTINGS: Settings = {
   dailyGoal: 10,
   modelRate: 1,
   accent: "en-AU",
+  examDate: null,
+  targetScore: 65,
 };
 
 export const ACCENT_OPTIONS: { value: Accent; label: string }[] = [
@@ -125,7 +131,7 @@ export const ACCENT_OPTIONS: { value: Accent; label: string }[] = [
 
 export function emptyState(preserveSettings?: Settings): AppState {
   return {
-    version: 3,
+    version: 4,
     attempts: [],
     bookmarks: [],
     notes: {},
@@ -137,12 +143,28 @@ export function emptyState(preserveSettings?: Settings): AppState {
 
 const EMPTY = emptyState();
 
+/** Aceita "YYYY-MM-DD" que de fato existe no calendário (1970–2100). */
+export function isValidExamDate(v: unknown): v is string {
+  if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+  const [y, m, d] = v.split("-").map(Number) as [number, number, number];
+  if (y < 1970 || y > 2100 || m < 1 || m > 12 || d < 1) return false;
+  const dt = new Date(y, m - 1, d);
+  return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
+}
+
 function normalizeSettings(raw: unknown): Settings {
   const s = (raw ?? {}) as Partial<Settings>;
   const accent: Accent =
     s.accent === "en-US" || s.accent === "en-GB" || s.accent === "en-AU"
       ? s.accent
       : DEFAULT_SETTINGS.accent;
+  const targetScore =
+    typeof s.targetScore === "number" &&
+    Number.isFinite(s.targetScore) &&
+    s.targetScore >= 10 &&
+    s.targetScore <= 90
+      ? Math.round(s.targetScore)
+      : DEFAULT_SETTINGS.targetScore;
   return {
     prepSeconds:
       typeof s.prepSeconds === "number" && s.prepSeconds >= 0
@@ -153,6 +175,8 @@ function normalizeSettings(raw: unknown): Settings {
     modelRate:
       typeof s.modelRate === "number" && s.modelRate > 0 ? s.modelRate : DEFAULT_SETTINGS.modelRate,
     accent,
+    examDate: isValidExamDate(s.examDate) ? s.examDate : null,
+    targetScore,
   };
 }
 
@@ -257,12 +281,18 @@ function normalizeNotes(raw: unknown): Record<string, QuestionNote> {
 }
 
 /**
- * Migração pura (testável): aceita estado v1 (Read Aloud), v2 ou v3 e devolve AppState v3.
+ * Migração pura (testável): aceita estado v1 (Read Aloud), v2, v3 ou v4 e devolve AppState v4.
  * Estados ilegíveis voltam limpos preservando nada.
  */
 export function migrateLegacyState(parsed: unknown): AppState {
   const obj = (parsed ?? {}) as Record<string, unknown> & { version?: number };
-  if (obj.version !== 1 && obj.version !== 2 && obj.version !== 3) return emptyState();
+  if (
+    obj.version !== 1 &&
+    obj.version !== 2 &&
+    obj.version !== 3 &&
+    obj.version !== 4
+  )
+    return emptyState();
   const settings = normalizeSettings(obj["settings"]);
   const attempts = (Array.isArray(obj["attempts"]) ? obj["attempts"] : [])
     .map((a) => normalizeAttempt(a))
@@ -272,8 +302,8 @@ export function migrateLegacyState(parsed: unknown): AppState {
   );
   const notes = normalizeNotes(obj["notes"]);
   const sessions = normalizeSessions(obj["sessions"]);
-  const draft = obj.version === 3 ? normalizeDraft(obj["draft"]) : null;
-  return { version: 3, attempts, bookmarks, notes, sessions, draft, settings };
+  const draft = obj.version === 3 || obj.version === 4 ? normalizeDraft(obj["draft"]) : null;
+  return { version: 4, attempts, bookmarks, notes, sessions, draft, settings };
 }
 
 function readKey(key: string): AppState | null {
@@ -460,7 +490,7 @@ export function exportBackup(): string {
   return JSON.stringify(
     {
       app: "pte-master-hub",
-      version: 3,
+      version: 4,
       exportedAt: new Date().toISOString(),
       attempts: state.attempts,
       bookmarks: state.bookmarks,
@@ -483,7 +513,7 @@ export function importBackup(json: string): { ok: boolean; error?: string } {
   const obj = parsed as Record<string, unknown>;
   const version = obj["version"];
   const isCurrent =
-    obj["app"] === "pte-master-hub" && (version === 2 || version === 3);
+    obj["app"] === "pte-master-hub" && (version === 2 || version === 3 || version === 4);
   const isLegacy = obj["app"] === "readaloud-trainer";
   if (!isCurrent && !isLegacy) {
     return { ok: false, error: "este arquivo não é um backup deste app" };

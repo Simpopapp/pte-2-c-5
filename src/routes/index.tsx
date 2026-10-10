@@ -23,6 +23,9 @@ import {
   recentAverage,
   useAppState,
 } from "@/lib/storage";
+import { countdownLabel, daysUntil, targetVerdict } from "@/lib/pte/goal";
+import { readinessBySection, weakestSection } from "@/lib/pte/readiness";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -61,6 +64,14 @@ function HomePage() {
   const dueCount = countDue(stats);
   const dueByType = useMemo(() => countDueByType(stats), [stats]);
 
+  const examDays = daysUntil(app.settings.examDate);
+  const examCountdown = countdownLabel(examDays);
+  const verdict = targetVerdict(avg7, app.settings.targetScore);
+
+  // Prontidão por seção (fase 2): chip compacto por card + destaque da mais fraca.
+  const readinessRows = useMemo(() => readinessBySection(app), [app]);
+  const weakSection = useMemo(() => weakestSection(readinessRows), [readinessRows]);
+
   // Próxima questão sugerida pela fila inteligente (revisões vencidas → novas), calculada no clique.
   const continueTraining = () => {
     const next = buildQueue(computeStats(app), 1)[0] ?? firstIdOfType("read_aloud");
@@ -90,6 +101,16 @@ function HomePage() {
               <p className="mt-2 text-sm">
                 <Link to="/session" className="font-medium text-primary hover:underline">
                   {dueCount} {dueCount === 1 ? "revisão vencida" : "revisões vencidas"} para hoje →
+                </Link>
+              </p>
+            ) : null}
+            {examCountdown ? (
+              <p className="mt-2 text-sm">
+                <Link to="/settings" className="font-medium text-primary hover:underline">
+                  {examCountdown}
+                  {verdict.tone !== "none"
+                    ? ` · ${verdict.label} (média ${avg7}% / alvo ${app.settings.targetScore})`
+                    : ""}
                 </Link>
               </p>
             ) : null}
@@ -125,8 +146,31 @@ function HomePage() {
           </div>
         </section>
 
+        {/* Prontidão: resumo + link para o painel completo */}
+        {readinessRows.some((r) => r.hasData) ? (
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              {weakSection ? (
+                <>
+                  Seção mais fraca:{" "}
+                  <span className="font-medium text-foreground">
+                    {SECTION_META[weakSection].label}
+                  </span>
+                </>
+              ) : null}
+            </p>
+            <Link
+              to="/progress"
+              hash="readiness"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Ver prontidão →
+            </Link>
+          </div>
+        ) : null}
+
         {/* Dashboard por seção */}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
           {SECTION_ORDER.map((section) => {
             const meta = SECTION_META[section];
             const types = (Object.keys(TYPE_META) as (keyof typeof TYPE_META)[]).filter(
@@ -136,8 +180,15 @@ function HomePage() {
             const attempted = types.reduce((n, t) => n + (typeStats.get(t)?.attemptedIds ?? 0), 0);
             const pct = sectionTotal > 0 ? Math.round((attempted / sectionTotal) * 100) : 0;
             const sectionDue = types.reduce((n, t) => n + (dueByType.get(t) ?? 0), 0);
+            const readiness = readinessRows.find((r) => r.section === section);
             return (
-              <section key={section} className="rounded-2xl border border-border bg-card">
+              <section
+                key={section}
+                className={cn(
+                  "rounded-2xl border border-border bg-card",
+                  section === weakSection && "border-primary/50 ring-1 ring-primary/30",
+                )}
+              >
                 <div className="flex items-center justify-between gap-3 border-b border-border/60 p-4">
                     <div>
                       <h2 className="font-serif text-lg font-semibold">{meta.label}</h2>
@@ -146,6 +197,19 @@ function HomePage() {
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
+                      {readiness?.hasData ? (
+                        <span
+                          className={cn(
+                            "rounded-full px-2 py-0.5 text-xs font-medium tabular-nums",
+                            section === weakSection
+                              ? "bg-warning/10 text-warning"
+                              : "bg-success/10 text-success",
+                          )}
+                          title={`Prontidão: índice ${readiness.score}/100 · ${readiness.level}`}
+                        >
+                          {readiness.score} · {readiness.level}
+                        </span>
+                      ) : null}
                       {sectionDue > 0 ? (
                         <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium tabular-nums text-primary">
                           {sectionDue} vencida{sectionDue > 1 ? "s" : ""} hoje

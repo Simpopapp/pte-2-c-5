@@ -5,6 +5,7 @@ import { TopNav } from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
 import { TYPE_META, getMeta, type TaskType } from "@/lib/pte";
 import { diagnoseAttempts, TAG_LABELS } from "@/lib/pte/diagnostics";
+import { readinessBySection, weakestSection } from "@/lib/pte/readiness";
 import { periodComparison, weeklyTypeAverages } from "@/lib/progress-analytics";
 import {
   computeStats,
@@ -105,6 +106,8 @@ function ProgressPage() {
   const diagnostics = useMemo(() => diagnoseAttempts(app.attempts), [app.attempts]);
   const comparison = useMemo(() => periodComparison(app.attempts), [app.attempts]);
   const weekly = useMemo(() => weeklyTypeAverages(app.attempts, 6).slice(0, 6), [app.attempts]);
+  const readiness = useMemo(() => readinessBySection(app), [app]);
+  const weakSection = useMemo(() => weakestSection(readiness), [readiness]);
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
@@ -122,8 +125,84 @@ function ProgressPage() {
           <Button onClick={() => navigate({ to: "/practice" })}>Treinar agora</Button>
         </div>
 
+        {/* Prontidão por seção */}
+        <section id="readiness" className="rounded-2xl border border-border bg-card p-5">
+          <h2 className="text-sm font-medium text-muted-foreground">Prontidão por seção</h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Índice 0–100 = 40% cobertura do banco + 40% média dos últimos 7 dias + 20%
+            estabilidade (consistência dos últimos 30 dias). Componentes sem dados redistribuem
+            o peso — começar do zero não é punido.
+          </p>
+          {readiness.every((r) => !r.hasData) ? (
+            <p className="mt-3 text-sm text-muted-foreground">
+              Sem tentativas ainda — a prontidão aparece após seus primeiros treinos.
+            </p>
+          ) : (
+            <div className="mt-4 space-y-3">
+              {readiness.map((r) => (
+                <div
+                  key={r.section}
+                  className={cn(
+                    "rounded-xl border p-3",
+                    r.section === weakSection && r.hasData
+                      ? "border-primary/50 bg-primary/5"
+                      : "border-transparent",
+                  )}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-sm font-medium">
+                      {r.label}
+                      {r.section === weakSection && r.hasData ? (
+                        <span className="ml-2 text-xs font-normal text-primary">
+                          mais fraca
+                        </span>
+                      ) : null}
+                    </span>
+                    <span className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span className="tabular-nums">
+                        {r.attempted}/{r.total} cobertas ({r.coverage}%)
+                      </span>
+                      <span className="tabular-nums">
+                        7d: {r.recentScore === null ? "—" : `${r.recentScore}%`}
+                      </span>
+                      <span
+                        className={cn(
+                          "rounded-full px-2 py-0.5 text-xs font-medium",
+                          r.level === "Pronto"
+                            ? "bg-success/10 text-success"
+                            : r.level === "Quase pronto"
+                              ? "bg-warning/10 text-warning"
+                              : "bg-secondary text-muted-foreground",
+                        )}
+                      >
+                        {r.level}
+                      </span>
+                    </span>
+                  </div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
+                    <div
+                      className={cn(
+                        "h-full rounded-full",
+                        r.score >= 85
+                          ? "bg-success"
+                          : r.score >= 65
+                            ? "bg-warning"
+                            : "bg-destructive/70",
+                      )}
+                      style={{ width: `${r.score}%` }}
+                    />
+                  </div>
+                  <p className="mt-1 text-right text-xs tabular-nums text-muted-foreground">
+                    índice {r.score}/100
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
         {/* Gráfico 14 dias */}
-        <section className="rounded-2xl border border-border bg-card p-5">
+        <section className="mt-6 rounded-2xl border border-border bg-card p-5">
           <h2 className="text-sm font-medium text-muted-foreground">
             Conteúdo médio — últimos 14 dias
           </h2>

@@ -46,7 +46,7 @@ describe("Notas por questão (storage v3)", () => {
     storage.upsertNote("pte-wfd-2", "palavra nova: threshold");
     const backup = storage.exportBackup();
     const parsed = JSON.parse(backup);
-    expect(parsed.version).toBe(3);
+    expect(parsed.version).toBe(4);
     expect(Object.keys(parsed.notes)).toHaveLength(2);
 
     vi.resetModules();
