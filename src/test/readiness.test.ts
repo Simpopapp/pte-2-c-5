@@ -89,9 +89,9 @@ describe("readinessBySection", () => {
     const sp = bySection(rows).get("speaking")!;
     expect(sp.recentScore).toBe(80);
     expect(sp.stability).toBeNull();
-    // (0.4·1 + 0.4·80) / 0.8 = 40.5 → 41 (Math.round de 40.5)
+    // (40·1 + 40·80) / 80 = 40.5 → 41 (Math.round de 40.5)
     expect(sp.score).toBe(41);
-    expect(sp.level).toBe("Iniciando");
+    expect(sp.level).toBe("Em progresso");
   });
 
   it("os três componentes entram com 40/40/20 quando todos existem", () => {
@@ -107,10 +107,10 @@ describe("readinessBySection", () => {
     const sp = bySection(rows).get("speaking")!;
     expect(sp.coverage).toBe(2);
     expect(sp.recentScore).toBe(70); // (80+60)/2
-    expect(sp.stability).toBeCloseTo(0.8, 5); // 1 − 20/100
-    // 0.4·2 + 0.4·70 + 0.2·80 = 0.8 + 28 + 16 = 44.8 → 45
-    expect(sp.score).toBe(45);
-    expect(sp.level).toBe("Iniciando");
+    expect(sp.stability).toBeCloseTo(0.9, 5); // 1 − 10/100
+    // (40·2 + 40·70 + 20·90) / 100 = (80 + 2800 + 1800) / 100 = 46.8 → 47
+    expect(sp.score).toBe(47);
+    expect(sp.level).toBe("Em progresso");
   });
 
   it("estabilidade alta (scores iguais) vale 1 e não pune", () => {
