@@ -94,6 +94,14 @@ function HomePage() {
                 </Link>
               </p>
             ) : null}
+            {examCountdown ? (
+              <p className="mt-2 text-sm">
+                <Link to="/settings" className="font-medium text-primary hover:underline">
+                  {examCountdown}
+                  {verdict ? ` · ${verdict.label} (média ${avg7}% / alvo ${goal target})` : ""}
+                </Link>
+              </p>
+            ) : null}
             <div className="mt-5 flex flex-wrap gap-2">
               <Button size="lg" onClick={continueTraining}>
                 {app.attempts.length === 0 ? "Começar agora" : "Continuar treino"}
