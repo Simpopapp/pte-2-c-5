@@ -41,13 +41,10 @@ coverage/
 
 # AI Agents, Runtimes & Opencode Tools (não essenciais para o app PTE)
 .lovable/
-AGENTS.md
-**/AGENTS.md
 TOOLS.md
 **/TOOLS.md
 AVISO-OPENCODE.txt
 opencode.json
-.opencode/
 runtime-skills/
 tools-skills/
 skills/
@@ -64,9 +61,6 @@ roadmap-*.md
 git-tool.md
 brain/
 
-
 # .opencode e arquivos do OpenCode visiveis no editor (pedido do usuario)
 !.opencode/
 !.opencode/**
-
-# test
