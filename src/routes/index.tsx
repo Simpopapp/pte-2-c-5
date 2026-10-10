@@ -24,6 +24,8 @@ import {
   useAppState,
 } from "@/lib/storage";
 import { countdownLabel, daysUntil, targetVerdict } from "@/lib/pte/goal";
+import { readinessBySection, weakestSection } from "@/lib/pte/readiness";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
