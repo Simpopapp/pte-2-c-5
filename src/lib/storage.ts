@@ -510,7 +510,7 @@ export function importBackup(json: string): { ok: boolean; error?: string } {
   const obj = parsed as Record<string, unknown>;
   const version = obj["version"];
   const isCurrent =
-    obj["app"] === "pte-master-hub" && (version === 2 || version === 3);
+    obj["app"] === "pte-master-hub" && (version === 2 || version === 3 || version === 4);
   const isLegacy = obj["app"] === "readaloud-trainer";
   if (!isCurrent && !isLegacy) {
     return { ok: false, error: "este arquivo não é um backup deste app" };
