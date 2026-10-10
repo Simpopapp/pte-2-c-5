@@ -131,7 +131,7 @@ export const ACCENT_OPTIONS: { value: Accent; label: string }[] = [
 
 export function emptyState(preserveSettings?: Settings): AppState {
   return {
-    version: 3,
+    version: 4,
     attempts: [],
     bookmarks: [],
     notes: {},
