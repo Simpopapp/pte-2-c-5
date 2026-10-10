@@ -68,7 +68,7 @@ export interface QuestionNote {
 }
 
 export interface AppState {
-  version: 3;
+  version: 4;
   attempts: Attempt[];
   bookmarks: string[];
   notes: Record<string, QuestionNote>;
