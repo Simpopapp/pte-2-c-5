@@ -159,8 +159,11 @@ function normalizeSettings(raw: unknown): Settings {
       ? s.accent
       : DEFAULT_SETTINGS.accent;
   const targetScore =
-    typeof s.targetScore === "number" && Number.isFinite(s.targetScore)
-      ? Math.min(90, Math.max(10, Math.round(s.targetScore)))
+    typeof s.targetScore === "number" &&
+    Number.isFinite(s.targetScore) &&
+    s.targetScore >= 10 &&
+    s.targetScore <= 90
+      ? Math.round(s.targetScore)
       : DEFAULT_SETTINGS.targetScore;
   return {
     prepSeconds:
