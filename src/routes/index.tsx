@@ -98,7 +98,9 @@ function HomePage() {
               <p className="mt-2 text-sm">
                 <Link to="/settings" className="font-medium text-primary hover:underline">
                   {examCountdown}
-                  {verdict ? ` · ${verdict.label} (média ${avg7}% / alvo ${goal target})` : ""}
+                  {verdict.tone !== "none"
+                    ? ` · ${verdict.label} (média ${avg7}% / alvo ${app.settings.targetScore})`
+                    : ""}
                 </Link>
               </p>
             ) : null}
