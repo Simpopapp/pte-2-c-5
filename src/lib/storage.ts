@@ -278,12 +278,18 @@ function normalizeNotes(raw: unknown): Record<string, QuestionNote> {
 }
 
 /**
- * Migração pura (testável): aceita estado v1 (Read Aloud), v2 ou v3 e devolve AppState v3.
+ * Migração pura (testável): aceita estado v1 (Read Aloud), v2, v3 ou v4 e devolve AppState v4.
  * Estados ilegíveis voltam limpos preservando nada.
  */
 export function migrateLegacyState(parsed: unknown): AppState {
   const obj = (parsed ?? {}) as Record<string, unknown> & { version?: number };
-  if (obj.version !== 1 && obj.version !== 2 && obj.version !== 3) return emptyState();
+  if (
+    obj.version !== 1 &&
+    obj.version !== 2 &&
+    obj.version !== 3 &&
+    obj.version !== 4
+  )
+    return emptyState();
   const settings = normalizeSettings(obj["settings"]);
   const attempts = (Array.isArray(obj["attempts"]) ? obj["attempts"] : [])
     .map((a) => normalizeAttempt(a))
@@ -293,8 +299,8 @@ export function migrateLegacyState(parsed: unknown): AppState {
   );
   const notes = normalizeNotes(obj["notes"]);
   const sessions = normalizeSessions(obj["sessions"]);
-  const draft = obj.version === 3 ? normalizeDraft(obj["draft"]) : null;
-  return { version: 3, attempts, bookmarks, notes, sessions, draft, settings };
+  const draft = obj.version === 3 || obj.version === 4 ? normalizeDraft(obj["draft"]) : null;
+  return { version: 4, attempts, bookmarks, notes, sessions, draft, settings };
 }
 
 function readKey(key: string): AppState | null {
