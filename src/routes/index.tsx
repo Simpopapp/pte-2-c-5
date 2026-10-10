@@ -23,6 +23,7 @@ import {
   recentAverage,
   useAppState,
 } from "@/lib/storage";
+import { countdownLabel, daysUntil, targetVerdict } from "@/lib/pte/goal";
 
 export const Route = createFileRoute("/")({
   head: () => ({
