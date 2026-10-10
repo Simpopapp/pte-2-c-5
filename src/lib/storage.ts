@@ -26,6 +26,10 @@ export interface Settings {
   dailyGoal: number;
   modelRate: number;
   accent: Accent;
+  /** Data da prova ("YYYY-MM-DD") ou null = sem meta declarada. */
+  examDate: string | null;
+  /** Pontuação-alvo PTE (10–90). */
+  targetScore: number;
 }
 
 export interface SessionResult {
